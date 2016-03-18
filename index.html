@@ -1,0 +1,848 @@
+<DOCTYPE html>
+<!--
+
+# 소스 까보지 마세요 헤헤
+- 슬라이드는 [remark.js](https://github.com/gnab/remark)를 사용했습니다.
+- 짤은 [GIPHY](http://giphy.com/)에서 찾은 The Community와 Brooklyn Nine-Nine 깊입니다.
+- 궁금한 점이 있다면 트위터 [@haruair](http://twitter.com/haruair)로 멘션 주세요.
+
+-->
+<html>
+  <head>
+    <title>제너레이터를 만나고 새 삶을 얻었어요</title>
+    <meta charset="utf-8">
+    <style>
+      @import url(https://fonts.googleapis.com/css?family=Yanone+Kaffeesatz);
+      @import url(https://fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic);
+      @import url(https://fonts.googleapis.com/css?family=Ubuntu+Mono:400,700,400italic);
+
+      body {
+        font-family: 'Apple SD Gothic Neo';
+        color: #FFFFFF;
+      }
+      h1, h2, h3 {
+        font-family: 'Apple SD Gothic Neo';
+        font-weight: 900;
+      }
+      .remark-slide-content {
+        background: #1B5692;
+      }
+      .remark-code, .remark-inline-code { font-family: 'Ubuntu Mono'; }
+      .remark-slide>.force-left {
+        text-align: left !important;
+      }
+      .huge {
+        font-size: 80px;
+        letter-spacing: -4px;
+        line-height: 0.95;
+        word-spacing: -8px;
+      }
+      .remark-slide-content h1.huge {
+        font-size: 106px;
+        letter-spacing: -10px;
+      }
+      .separator {
+        display: block;
+      }
+      .normal {
+        font-size: 35px;
+      }
+      .darken {
+        opacity: 0.5;
+      }
+      .background {
+        position:absolute;
+        opacity: 0.2;
+        left: -40%;
+        top: 0;
+        width: 200%;
+      }
+      .front {
+        position: relative;
+        z-index: 100;
+      }
+
+    </style>
+  </head>
+  <body>
+    <textarea id="source">
+name: inverse
+layout: true
+class: center, middle, inverse
+---
+
+<h1 class="huge">
+제너레이터를 만나고 새 삶을 얻었어요
+</h1>
+
+<p><span style="opacity: 0.5;">JavaScript의 generator와 co, koajs</span></p>
+<p>김용균 (@haruair)<span style="margin-top: 10px; display: block;">이상한모임 / Kobe Creations</span></p>
+
+---
+
+<p class="normal">
+사실은 다른 발표 주제를 하려고 했는데<span class="separator"></span>
+시간 내에 마무리 하기 어려울 것 같아서
+</p>
+
+---
+
+<p class="normal">
+그래도 이거 편합니다. 써보세요.<span class="separator"></span>
+<strong>몸에 매우 좋은 약</strong>
+</p>
+
+---
+
+<p class="huge">
+비동기
+</p>
+
+---
+
+<p class="huge">
+흐름 제어?
+</p>
+
+---
+
+<p class="huge">
+<span>콜백 <strong>그냥커피</strong></span>
+<span class="separator"></span>
+&nbsp;
+</p>
+
+---
+
+<img src="http://i.giphy.com/qFi3fACSMnP4Q.gif">
+
+<span class="darken">(아니 콜백이 그냥 커피라고?)</span>
+---
+
+<p class="huge">
+<span>콜백 <strong>그냥커피</strong></span>
+<span class="separator"></span>
+&nbsp;
+</p>
+
+---
+
+<p class="huge">
+<span class="darken">콜백 <strong>그냥커피</strong></span>
+<span class="separator"></span>
+<span>프로미스 <strong>티*피</strong></span>
+</p>
+
+---
+
+<p class="normal">
+프로미스, 만족하십니까?
+</p>
+
+---
+
+<p class="huge">
+<span>프로미스 <strong>티*피</strong></span>
+<span class="separator"></span>
+&nbsp;
+</p>
+
+---
+
+<p class="huge">
+<span class="darken">프로미스 <strong>티*피</strong></span>
+<span class="separator"></span>
+<span>제너레이터 <strong>네*프레소</strong></span>
+</p>
+
+---
+
+<h2 class="normal">
+날코드 예제
+</h2>
+
+---
+class:force-left
+
+```js
+var edward = new User({name: 'edward'});
+
+model.saveUser(edward, (err, user) => {
+  if(err) return console.error(err);
+  console.log(user.name);
+});
+```
+---
+class:force-left
+
+```js
+var edward = new User({name: 'edward'});
+
+model.saveUser(edward)
+  .then(user => {
+    console.log(user.name);
+  }).catch(err => {
+    console.error(err);
+  });
+```
+
+---
+
+<img src="http://i.giphy.com/YcMs3OGd89Pxu.gif">
+
+<p class="huge">
+프로미스 짱짱맨!
+</p>
+
+---
+
+<img class="background" src="http://i.giphy.com/YcMs3OGd89Pxu.gif">
+
+<p class="huge front">
+중첩 콜백에서 탈출!
+<span class="separator"></span>
+순차/병렬 순서 맘대로!
+<span class="separator"></span>
+예외 처리!
+</p>
+
+---
+
+<p class="huge">
+그런데 저는,
+</p>
+
+---
+
+![](http://i.giphy.com/3oEdv4iluiAidsJCda.gif)
+
+---
+
+<p class="normal">
+이상하게도 프로미스랑 영 친해지지 못했음
+<span class="separator"></span>
+나만 프로미스 축제에 끼지 못한 느낌
+</p>
+
+---
+
+<p class="normal">
+* 지극히 개인적인 감상입니다.
+</p>
+
+---
+
+<p class="normal">
+코드가 여전히 눈에 잘 들어오지 않는다...
+<span class="separator"></span>
+<span class="darken">업그레이드된 jQuery?</span>
+</p>
+
+<span class="darken">차라리 콜백이 읽기 쉽다...</span>
+
+---
+
+<p class="normal">
+다시 콜백 예제
+</p>
+
+---
+class:force-left
+
+마음이 다 편해지는(?) 콜백 코드
+
+```js
+UserModel.getUserByName('edward', (err, user) => {
+  if(err) return console.error(err);
+  if(user) {
+    user.nickname = 'Koala';
+    user.save();
+  }
+});
+```
+
+---
+
+<p class="normal">
+이렇게 쓸 수 없습니까?
+</p>
+
+---
+class:force-left
+
+이런 느낌으로
+
+```js
+var user = UserModel.getUserByName('Edward');
+
+if(user) {
+  console.log(user.name);
+
+  user.nickname = 'Koala';
+  user.save();
+
+  console.log(user.nickname);
+}
+```
+---
+
+<img src="https://media.giphy.com/media/7MX9p2zYexCKI/giphy.gif" />
+
+잠깐만요?
+
+---
+
+
+<img style="width:135%;left:-20%" class="background" src="https://media.giphy.com/media/7MX9p2zYexCKI/giphy.gif" />
+
+
+<p class="huge front">
+비동기에서 무슨 짓을?
+<span class="separator"></span>
+이러면 에러 안나나요?
+</p>
+
+---
+
+<p class="normal">
+제너레이터는 다르다
+</p>
+
+---
+
+<p class="huge">
+제너레이터는 다르다!
+</p>
+
+---
+
+![](http://i.giphy.com/l41lVmZT2rFeSLBXW.gif)
+
+---
+
+class:force-left
+
+물론 조오금 다릅니다. `yield`
+
+```js
+var user = yield UserModel.getUserByName('Edward');
+
+if(user) {
+  console.log(user.name);
+
+  user.nickname = 'Koala';
+  yield user.save();
+
+  console.log(user.nickname);
+}
+```
+
+---
+
+<img src="http://i.giphy.com/aBN66chr4Y9na.gif" style="width: 100%">
+
+---
+
+<h2 class="huge">
+제너레이터<span class="separator"></span>
+</h2>
+Generator
+
+---
+
+<p class="huge">
+제너레이터는 이름대로<span class="separator"></span>
+함수를 생성해주는 함수
+</p>
+
+---
+
+<p class="huge">
+무슨 함수를 생성해주나?
+</p>
+
+---
+
+<p class="normal">
+여러번 반복해서 호출할 수 있는,
+일종의 iterator
+</p>
+
+`Symbol.iterator` <span class="darken">mdn.io/Symbol.iterator</span>
+
+---
+
+<p class="normal">
+`next()`로 호출할 때마다 <span class="separator"></span>
+상태 `done`와 값 `value`을 반환
+</p>
+
+---
+
+class:force-left
+
+하나 봅시다.
+
+```js
+function* Say() {
+  yield "안녕하세요";
+  yield "저는";
+  yield "코알라입니다";
+}
+```
+
+---
+class:force-left
+
+호출을 해봅시다.
+
+```js
+var say = Say();
+
+say.next(); // {value: "안녕하세요", done: false}
+say.next(); // {value: "저는", done: false}
+say.next(); // {value: "코알라입니다", done: false}
+say.next(); // {value: undefined, done: true}
+```
+
+---
+
+<img src="https://media.giphy.com/media/6agGMtS4rEVSo/giphy.gif">
+
+<p class="normal">
+아... 제너레이터는 중간에 결과를 반환했다가 <span class="separator"></span>
+다시 호출하면 반환한 곳부터 시작하는구나...
+</p>
+
+---
+class:force-left
+
+`name`은 어떻게 값을 받아올까?
+
+```js
+function* Realworld() {
+  let name = yield 'name?';
+  console.log("Hello", name);
+}
+```
+
+---
+class:force-left
+
+`next()`의 인자로 반환하면 배정됨을 확인
+
+```js
+var world = Realworld();
+world.next(); // {value: "name?", done: false}
+world.next("Edward"); // `name`에 값을 반환
+// "Hello Edward"
+```
+
+---
+
+<img src="https://media.giphy.com/media/6agGMtS4rEVSo/giphy.gif">
+
+<p class="normal">
+아... 제너레이터는 문맥으로 다시 돌아갈 때 <span class="separator"></span>
+<code>next()</code>의 인자로 값을 배정할 수 있구나...
+</p>
+
+---
+
+<p class="normal">
+이게 제너레이터의 전부입니다.
+</p>
+
+---
+
+<p class="normal">
+이걸 비동기에서 어떻게 써먹을 수 있을까?
+</p>
+
+---
+
+<img src="https://media.giphy.com/media/7MX9p2zYexCKI/giphy.gif" />
+
+---
+class:force-left
+
+1. 제너레이터로 이터레이터 생성
+2. 이터레이터를 실행
+3. `done === false`가 반환되면
+ 1. `value`로 반환된 함수를 실행한 후에
+ 2. `next()`로 값을 반환하고 다시 원래 맥락으로 돌아가서 코드를 진행
+ 3. <span class="darken">goto</span> 2
+4. `done === true`면 종료
+
+---
+
+<img src="https://media.giphy.com/media/6agGMtS4rEVSo/giphy.gif">
+
+<p class="normal">
+아... 제너레이터는 <span class="darken">뭔가 복잡하지만</span>
+<span class="separator"></span>
+비동기에서 사용할 방법이 있긴 있나보구나
+</p>
+
+---
+
+class:force-left
+
+다시 빠르게 잘 봅시다.
+
+1. 제너레이터로 이터레이터 생성
+2. 이터레이터를 실행
+3. `done === false`가 반환되면
+ 1. `value`로 반환된 어찌되었든 비동기 함수를 실행한 후에 <span class="darken">콜백? 프로미스?</span>
+ 2. 결과가 비동기로 돌아오면
+ 3. `next()`로 그 값을 반환하고 다시 원래 맥락으로 돌아가서 코드를 진행
+ 4. <span class="darken">goto</span> 2
+4. `done === true`면 종료
+
+---
+
+<img src="https://media.giphy.com/media/6agGMtS4rEVSo/giphy.gif">
+
+<p class="normal">
+아... 비동기에서 써먹으려면 앞에서 본 로직처럼
+<span class="separator"></span>
+뭔가 부수적인 처리가 필요하겠구나
+</p>
+
+---
+
+<img src="http://i.giphy.com/8dFTGEdxRliRq.gif" style="width: 50%">
+
+<p class="normal">
+그럼 제너레이터 기본 동작은 아니네요?<span class="separator"></span>
+앞서 로직을 모두 구현해야 비동기 쓰나요?
+</p>
+
+---
+
+<p class="normal">
+존잘님이 다 만들어 두셨습니다.
+</p>
+---
+
+<p class="normal">
+제너레이터 문법을 사용할 수 있는 control flow
+<span class="separator"></span>
+<span class="huge">tj/co</span>
+<span class="separator"></span>
+<span class="darken">github.com/tj/co</span>
+</p>
+
+
+---
+
+<p class="normal">
+내부적으로 프로미스를 사용해서 구현되어 있음
+</p>
+
+---
+
+<p class="huge">
+프로미스로 외쳐<span class="darken"><code>Yield</code></span>!!
+<span class="separator"></span>
+그럼 알아서 처리해줄게!!
+</p>
+
+---
+
+<p class="normal">
+간단 예제
+</p>
+
+---
+class:force-left
+
+흔한 프로미스
+
+```js
+var fetch = require('node-fetch');
+
+function getUser(username) {
+  return fetch(`https://api.github.com/users/${username}`)
+      .then(res => res.json())
+      .then(user => !user.message ? user : null);
+}
+```
+
+---
+class:force-left
+
+프라미씽합니까?
+
+```js
+getUser('haruair')
+  .then(user => {
+    console.log(user.login, user.html_url);
+  });
+```
+
+---
+class:force-left
+
+`co`를 사용하면 이렇습니다.
+
+```js
+var co = require('co');
+
+co(function *(){
+  let user = yield getUser('haruair'); 
+  console.log(user.login, user.html_url);
+});
+```
+
+---
+
+<p class="normal">
+<code>.catch()</code>는 어떻게?
+</p>
+
+---
+class:force-left
+
+프로미스의 에러 핸들링을 위한 체이닝
+
+```js
+getUser('haruair')
+  .then(user => {
+    if(user == null) console.log('user not exists');
+    else console.log(user.login, user.html_url);
+  })
+  .catch(err => {
+    console.error(err.stack);
+  });
+```
+
+대신에...
+
+---
+class:force-left
+
+`try ... catch`를 사용
+
+```js
+co(function *(){
+
+  let user;
+
+  try {
+    user = yield getUser('haruair');
+  } catch (err) {
+    console.error(err.stack);
+  }
+
+  if(user == null) console.log('user not exists');
+  else console.log(user.login, user.html_url);
+
+});
+```
+
+---
+
+<p class="normal">
+깔끔한가요?
+</p>
+
+---
+
+<p class="normal">
+저만 깔끔한가요? <span class="darken">ㅠㅠ</span>
+</p>
+
+---
+
+<p class="normal">
+co 기반으로 만든
+<span class="separator"></span>
+<span class="huge">koa.js</span>
+<span class="separator"></span>
+<span class="darken">github.com/koajs/koa</span>
+</p>
+
+---
+
+<p class="huge">
+웹 프레임워크?<span class="separator"></span>
+&nbsp;</p>
+
+---
+
+<p class="huge">
+<span class="darken">웹 프레임워크?</span><span class="separator"></span>
+HTTP 미들웨어!</p>
+
+---
+
+<p class="huge">
+가볍다,
+쉽다,
+간단하다
+</p>
+
+---
+
+<img src="http://i.giphy.com/Hg7gPa05K6bAc.gif">
+
+그래서 쿨해요.
+
+---
+
+<p class="normal">
+앞에서 본 co랑 비슷한데<span class="separator"></span>
+약간 웹을 위한 양념이 있습니다
+</p>
+
+---
+class:force-left
+
+`koa`의 Hello World
+
+```js
+var koa = require('koa');
+var app = koa();
+
+app.use(function *() {
+  this.body = {message: 'Hello World'};
+});
+
+app.listen(process.env.PORT || 3000);
+```
+
+---
+
+<p class="normal">
+빠른 데모
+</p>
+
+---
+
+<span class="darken">*</span>
+
+---
+
+<p class="normal">
+빠른 정리
+</p>
+
+---
+class:force-left
+
+- 제너레이터와 이터레이터
+- 문법
+- 프로미스와 제너레이터 문법을 사용할 수 있는 co
+ - 비슷한 task.js
+- co로 만들어진 HTTP 미들웨어 koajs
+- one more thing...
+
+---
+
+<p class="normal">
+<span class="darken">근</span>미래
+</p>
+
+
+---
+
+<p class="huge">
+제너레이터 <strong>네*프레소</strong>
+<span class="separator"></span>
+&nbsp;
+</p>
+
+---
+
+<p class="huge">
+<span class="darken">제너레이터 <strong>네*프레소</strong></span>
+<span class="separator"></span>
+<span>async/await <strong>초고급커피</strong></span>
+</p>
+
+---
+
+<p class="huge">
+ES7에 제안된
+<span class="separator"></span>
+async/await
+</p>
+
+---
+class:force-left
+
+generator + `co`
+
+```js
+var co = require('co');
+
+co(function*() {
+  var user = yield getUser('edward');
+  console.log(user.username);
+});
+```
+---
+class:force-left
+
+`async` / `await`
+
+```js
+async function Hello() {
+  var user = await getUser('edward');
+  console.log(user.username);
+}
+
+Hello();
+```
+
+---
+
+<p class="normal">
+koa도 다음 버전에서 <code>async</code> / <code>await</code> 적용 예정
+</p>
+
+---
+
+<p class="normal">
+멋진 기능을 기대하며<span class="separator"></span>
+발표는 여기까지
+</p>
+
+---
+
+<p class="normal">
+더 재미있는 개발이 되었으면 좋겠습니다
+<span class="separator"></span>
+</p>
+
+발표 내용은 <span class="darken">github.com/haruair/emocon-2016SS-generator</span> 에서
+---
+
+<p class="normal">
+질문이 있다면 망설이지 마세요
+</p>
+
+<img src="http://i.giphy.com/cYDlCkEM3MksU.gif">
+
+
+---
+
+<img src="http://i.giphy.com/QRiTzPV4TstQA.gif">
+
+<div>
+  감사합니다
+
+  <p>김용균<span style="margin-top: 10px; display: block;">이상한모임 / Kobe Creations</span></p>
+  <div>트위터 @haruair</div>
+  <div>웹 haruair.com</div>
+</div>
+
+    </textarea>
+    <script src="https://gnab.github.io/remark/downloads/remark-latest.min.js">
+    </script>
+    <script>
+      var slideshow = remark.create();
+    </script>
+  </body>
+</html>
